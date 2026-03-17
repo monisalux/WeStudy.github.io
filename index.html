@@ -1749,7 +1749,7 @@ body {
 <section id="extras" class="tab-content">
   <div class="section-header">
     <h3>My Schedule</h3>
-    <p class="muted">View available slots and book extra sessions up to <strong>14 days in advance</strong>. Sign in below to see your personal schedule.</p>
+    <p class="muted">Sign in to view your upcoming and past sessions on the calendar below.</p>
   </div>
 
   <!-- Login modal -->
@@ -2335,6 +2335,13 @@ openLoginBtn.addEventListener("click", function() { loginModal.classList.remove(
 loginModalX.addEventListener("click", closeLoginModal);
 loginCancelBtn.addEventListener("click", closeLoginModal);
 loginModal.addEventListener("click", function(e) { if (e.target === loginModal) closeLoginModal(); });
+
+function durationLabel(start, end) {
+  var mins = Math.round((end - start) / 60000);
+  if (mins < 60) return mins + " min";
+  if (mins === 60) return "1 hr";
+  return (mins / 60).toFixed(1).replace(".0","") + " hrs";
+}
 
 function renderSessions(upcoming, past) {
   mySessionsPanel.classList.remove("hidden");
