@@ -1798,15 +1798,13 @@ body {
 
   <!-- Calendar -->
   <div class="legend">
-    <span class="legend-dot available-dot"></span> Available &nbsp;&nbsp;
-    <span class="legend-dot booked-dot"></span> Booked &nbsp;&nbsp;
-    <span class="legend-dot" style="background:#8b5cf6"></span> My Sessions
+    <span class="legend-dot" style="background:#8b5cf6"></span> Your sessions appear in purple after signing in
   </div>
 
   <div id="calendar"></div>
 
   <p class="calendar-note">
-    🟢 Tap a green slot to book. Sign in to see your sessions highlighted in purple.
+    Sign in below to see your scheduled sessions highlighted on the calendar.
   </p>
 
   <!-- Sessions list (shown after login, below calendar) -->
@@ -2161,47 +2159,6 @@ body {
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
 
-<!-- ================= BOOKING MODAL ================= -->
-<div id="bookingModal" class="modal hidden">
-  <div class="modal-card">
-    <button class="modal-close" id="modalX" aria-label="Close">×</button>
-    <h3>Book Extra Session</h3>
-    <p id="selectedTimeText" class="modal-time"></p>
-
-    <form id="bookingForm">
-      <div class="form-field">
-        <label>Student Number</label>
-        <input name="studentNumber" required placeholder="Your student ID" />
-      </div>
-      <div class="form-field">
-        <label>Password</label>
-        <input name="password" type="password" required placeholder="Your password" />
-      </div>
-      <div class="form-field">
-        <label>Session Duration</label>
-        <select name="duration" required>
-          <option value="">Select duration</option>
-          <option value="30">30 minutes</option>
-          <option value="60">1 hour</option>
-          <option value="90">1.5 hours</option>
-          <option value="120">2 hours</option>
-        </select>
-      </div>
-      <div class="form-field">
-        <label>What do you need help with?</label>
-        <textarea name="notes" required placeholder="Subject, topic, or specific questions…"></textarea>
-      </div>
-
-      <div class="modal-actions">
-        <button type="submit" class="btn btn-primary-teal">Confirm Booking</button>
-        <button type="button" class="btn btn-outline-dark" id="closeModal">Cancel</button>
-      </div>
-
-      <p id="bookingMsg" class="form-msg"></p>
-    </form>
-  </div>
-</div>
-
 
 <script>
 // ── STEP 1: Tabs ──
@@ -2323,19 +2280,7 @@ function launchConfetti() {
   setTimeout(function() { container.remove(); }, 1600);
 }
 
-// ── STEP 4: Extra Sessions Calendar + Booking Modal + Login ──
-var BOOKING_API_URL = "https://script.google.com/macros/s/AKfycbycNYRfD73u3_QmmTgUPnrjSaa4GRRTGE9eEq2T08u5-h33ZA3KhYrpauGA4_mvGTV5/exec";
-var CAL_TZ = "America/Toronto";
-
-// ── Duration label helper ──
-function durationLabel(start, end) {
-  var mins = Math.round((end - start) / 60000);
-  if (mins < 60) return mins + " min";
-  if (mins === 60) return "1 hr";
-  return (mins / 60).toFixed(1).replace(".0","") + " hrs";
-}
-
-// ── Calendar ──
+// ── STEP 4: Calendar (view only) ──
 var calendarEl = document.getElementById("calendar");
 if (calendarEl && typeof FullCalendar !== "undefined") {
 
@@ -2356,120 +2301,6 @@ if (calendarEl && typeof FullCalendar !== "undefined") {
 
   window.extraSessionsCalendar = calendar;
   calendar.render();
-
-  function loadAvailability() {
-    calendar.getEvents().forEach(function(ev) { ev.remove(); });
-    fetch(BOOKING_API_URL + "?action=availability", { cache: "no-store" })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (!data.ok) return;
-        (data.slots || []).forEach(function(slot) {
-          var start = new Date(slot.start);
-          var end   = new Date(slot.end);
-          var isAvailable = (slot.title || "").toLowerCase().startsWith("available") || (!slot.title && slot.maxMinutes > 0);
-          // Show duration in title
-          var label = isAvailable ? ("Available \u00b7 " + durationLabel(start, end)) : "Booked";
-          calendar.addEvent({
-            title:      label,
-            start:      start,
-            end:        end,
-            display:    "block",
-            classNames: isAvailable ? ["available"] : ["booked"],
-            editable:   false,
-            extendedProps: {
-              availabilityId: isAvailable ? slot.id : null,
-              maxMinutes:     isAvailable ? (slot.maxMinutes || 0) : 0
-            }
-          });
-        });
-      })
-      .catch(function(err) { console.error("Failed to load availability:", err); });
-  }
-
-  loadAvailability();
-
-  // ── Booking modal ──
-  var modal            = document.getElementById("bookingModal");
-  var closeModalBtn    = document.getElementById("closeModal");
-  var modalX           = document.getElementById("modalX");
-  var bookingForm      = document.getElementById("bookingForm");
-  var bookingMsg       = document.getElementById("bookingMsg");
-  var selectedTimeEl   = document.getElementById("selectedTimeText");
-  var durationSelect   = bookingForm.duration;
-  var bookingSubmitBtn = bookingForm.querySelector('button[type="submit"]');
-  var selectedAvailability = null;
-
-  function closeBookingModal() {
-    modal.classList.add("hidden");
-    selectedAvailability = null;
-    bookingMsg.textContent = "";
-    if (bookingSubmitBtn) bookingSubmitBtn.disabled = false;
-  }
-
-  modalX.onclick = closeBookingModal;
-  closeModalBtn.onclick = closeBookingModal;
-  modal.addEventListener("click", function(e) { if (e.target === modal) closeBookingModal(); });
-
-  calendar.on("eventClick", function(info) {
-    var ev = info.event;
-    if (!ev.classNames.includes("available")) return;
-    selectedAvailability = ev;
-    selectedTimeEl.textContent = "\uD83D\uDCC5 " + ev.start.toLocaleString("en-CA", { timeZone: CAL_TZ, dateStyle: "medium", timeStyle: "short" }) + " \u00b7 " + durationLabel(ev.start, ev.end);
-    durationSelect.innerHTML = '<option value="">Select duration</option>';
-    [30, 60, 90, 120].forEach(function(min) {
-      if (min <= (ev.extendedProps.maxMinutes || 0)) {
-        var o = document.createElement("option");
-        o.value = String(min);
-        o.textContent = min === 30 ? "30 minutes" : min === 60 ? "1 hour" : min === 90 ? "1.5 hours" : "2 hours";
-        durationSelect.appendChild(o);
-      }
-    });
-    bookingForm.reset();
-    bookingMsg.textContent = "";
-    if (bookingSubmitBtn) bookingSubmitBtn.disabled = true;
-    modal.classList.remove("hidden");
-  });
-
-  durationSelect.addEventListener("change", function() {
-    if (bookingSubmitBtn) bookingSubmitBtn.disabled = !durationSelect.value;
-  });
-
-  bookingForm.addEventListener("submit", async function(e) {
-    e.preventDefault();
-    if (!selectedAvailability) return;
-    var durationMinutes = Number(durationSelect.value);
-    if (!durationMinutes) { bookingMsg.textContent = "\u274C Please select a duration."; return; }
-    bookingMsg.textContent = "Booking\u2026";
-    if (bookingSubmitBtn) bookingSubmitBtn.disabled = true;
-    try {
-      var resp = await fetch(BOOKING_API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "book",
-          availabilityId: selectedAvailability.extendedProps.availabilityId,
-          studentNumber: bookingForm.studentNumber.value.trim(),
-          password: bookingForm.password.value.trim(),
-          durationMinutes: durationMinutes,
-          notes: bookingForm.notes.value.trim()
-        })
-      });
-      var data = await resp.json();
-      if (!data || !data.ok) {
-        bookingMsg.textContent = "\u274C " + (data?.error || "Booking failed.");
-        if (bookingSubmitBtn) bookingSubmitBtn.disabled = false;
-        return;
-      }
-      launchConfetti();
-      alert("\uD83C\uDF89 Booking confirmed! Check your email for details.");
-      closeBookingModal();
-      loadAvailability();
-    } catch(err) {
-      console.error(err);
-      bookingMsg.textContent = "\u274C Network error. Please try again.";
-      if (bookingSubmitBtn) bookingSubmitBtn.disabled = false;
-    }
-  });
 
 } // end calendar guard
 
