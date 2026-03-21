@@ -2757,6 +2757,11 @@ body.mobile-menu-open .mobile-menu {
 
 
 <script>
+// ── Global config ──
+var BOOKING_API_URL = "https://script.google.com/macros/s/AKfycbycNYRfD73u3_QmmTgUPnrjSaa4GRRTGE9eEq2T08u5-h33ZA3KhYrpauGA4_mvGTV5/exec";
+var CAL_TZ = "America/Toronto";
+var TZ     = "America/Toronto";
+
 // ── STEP 1: Tabs ──
 function setTab(tabId) {
   document.querySelectorAll(".tab-content").forEach(s => s.classList.remove("active"));
@@ -2825,7 +2830,6 @@ var EMAILJS_PUBLIC_KEY  = "z01UAn-dERFLYMxUV";
 var EMAILJS_SERVICE_ID  = "service_ajfd3oo";
 var TEMPLATE_TO_YOU     = "westudy_inquiry";
 var TEMPLATE_AUTOREPLY  = "template_autoreply";
-var TZ = "America/Toronto";
 var emailReady = false;
 
 var emailJsScript = document.createElement("script");
@@ -3031,8 +3035,6 @@ if (commentForm) {
 }
 
 // ── STEP 4: Calendar (view only) ──
-var BOOKING_API_URL = "https://script.google.com/macros/s/AKfycbycNYRfD73u3_QmmTgUPnrjSaa4GRRTGE9eEq2T08u5-h33ZA3KhYrpauGA4_mvGTV5/exec";
-var CAL_TZ = "America/Toronto";
 var calendarEl = document.getElementById("calendar");
 if (calendarEl && typeof FullCalendar !== "undefined") {
 
