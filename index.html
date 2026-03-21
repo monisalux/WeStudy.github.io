@@ -2701,7 +2701,7 @@ body.mobile-menu-open .mobile-menu {
         <div class="contact-icon">📧</div>
         <div>
           <strong>Email</strong>
-          <a href="mailto:jenisha.french@gmail.com"><span class="__cf_email__" data-cfemail="9cf6f9f2f5eff4fdb2faeef9f2fff4dcfbf1fdf5f0b2fff3f1"><span class="__cf_email__" data-cfemail="610b040f081209004f0713040f020921060c00080d4f020e0c">jenisha.french@gmail.com</span></span></a>
+          <a href="/cdn-cgi/l/email-protection#375d52595e445f561951455259545f77505a565e5b1954585a"><span class="__cf_email__" data-cfemail="9cf6f9f2f5eff4fdb2faeef9f2fff4dcfbf1fdf5f0b2fff3f1"><span class="__cf_email__" data-cfemail="610b040f081209004f0713040f020921060c00080d4f020e0c">[email&#160;protected]</span></span></a>
         </div>
       </div>
       <div class="contact-item card lift">
@@ -2758,7 +2758,7 @@ body.mobile-menu-open .mobile-menu {
 
 <script>
 // ── Global config ──
-var BOOKING_API_URL = "https://script.google.com/macros/s/AKfycbycNYRfD73u3_QmmTgUPnrjSaa4GRRTGE9eEq2T08u5-h33ZA3KhYrpauGA4_mvGTV5/exec";
+var BOOKING_API_URL = "https://script.google.com/macros/s/AKfycbx5jXbY3zx1Jc-Huc2iKusR7mfNZD9_uSCbaZTrpC-NDjRcj8AoAyKVmnT6gIvMhvwO/exec";
 var CAL_TZ = "America/Toronto";
 var TZ     = "America/Toronto";
 
@@ -3007,11 +3007,15 @@ if (commentForm) {
     };
 
     try {
-      var resp = await fetch(BOOKING_API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+      var params = new URLSearchParams({
+        action:    "addComment",
+        name:      payload.name,
+        role:      payload.role,
+        rating:    payload.rating,
+        comment:   payload.comment,
+        timestamp: payload.timestamp
       });
+      var resp = await fetch(BOOKING_API_URL + "?" + params.toString(), { cache: "no-store" });
       var data = await resp.json();
       if (data.ok) {
         launchConfetti();
