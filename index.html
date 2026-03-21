@@ -1811,6 +1811,159 @@ body.mobile-menu-open .mobile-menu {
   }
 }
 
+
+/* ===========================
+   COMMENTS / REVIEWS
+=========================== */
+.comment-form-card { padding: 24px; }
+
+.star-picker {
+  display: flex;
+  gap: 4px;
+  margin-top: 2px;
+}
+.star-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #cbd5e1;
+  cursor: pointer;
+  padding: 0 2px;
+  transition: color 0.15s ease, transform 0.15s ease;
+  line-height: 1;
+}
+.star-btn.active,
+.star-btn:hover {
+  color: #f59e0b;
+  transform: scale(1.15);
+}
+
+.comments-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 16px 0;
+}
+.comments-spinner {
+  width: 18px; height: 18px;
+  border: 2px solid #e2e8f0;
+  border-top-color: var(--turq);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.comments-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.comment-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(0,0,0,0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.comment-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.comment-stars {
+  color: #f59e0b;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.comment-text {
+  font-size: 0.95rem;
+  color: var(--dark);
+  line-height: 1.7;
+  margin: 0 0 16px;
+  font-style: italic;
+}
+
+.comment-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.comment-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--turq), var(--turq2));
+  color: white;
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.comment-author strong { display: block; font-size: 0.88rem; font-weight: 800; }
+.comment-author span   { font-size: 0.78rem; color: var(--muted); }
+
+.comments-empty {
+  text-align: center;
+  padding: 32px 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 640px) {
+  .comments-grid { grid-template-columns: 1fr; }
+  .comment-form-card { padding: 18px 16px; }
+}
+
+
+/* ===========================
+   REFERRAL SECTION
+=========================== */
+.referral-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 16px;
+}
+.referral-divider::before,
+.referral-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+.referral-divider span {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.referral-box {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: #f0fffe;
+  border: 1px solid rgba(46,196,182,0.25);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+.referral-icon { font-size: 1.6rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+.referral-info strong { display: block; font-size: 0.95rem; font-weight: 800; margin-bottom: 4px; color: var(--dark); }
+.referral-info p { margin: 0; font-size: 0.86rem; color: var(--muted); line-height: 1.55; }
+
+@media (max-width: 640px) {
+  .referral-box { flex-direction: column; gap: 10px; }
+}
+
   </style>
 </head>
 
@@ -1995,6 +2148,22 @@ body.mobile-menu-open .mobile-menu {
         <div class="form-field">
           <label>Message <span class="optional">(optional)</span></label>
           <textarea name="message" placeholder="Any additional details about the student or goals…"></textarea>
+        </div>
+
+        <!-- Referral section -->
+        <div class="referral-divider">
+          <span>Referral</span>
+        </div>
+        <div class="referral-box">
+          <div class="referral-icon">🎁</div>
+          <div class="referral-info">
+            <strong>Were you referred by someone?</strong>
+            <p>If a WeStudy family referred you, enter their name below — and include the <strong>student's name</strong> if possible. This unlocks a discounted rate of <strong>$20/hr for your first 3 months</strong>.</p>
+          </div>
+        </div>
+        <div class="form-field" style="margin-top:12px">
+          <label>Referred by <span class="optional">(optional)</span></label>
+          <input type="text" name="referral" placeholder="e.g. Sarah (include student name if possible)" />
         </div>
 
         <button type="submit" class="join-submit">Send Inquiry</button>
@@ -2375,31 +2544,7 @@ body.mobile-menu-open .mobile-menu {
       <p class="tutor-bio">A business management graduate with strong communication skills and a knack for making concepts clear and relatable for all ages.</p>
     </div>
 
-    <!-- University student 1 -->
-    <div class="tutor-card card lift">
-      <div class="tutor-avatar" style="background:linear-gradient(135deg,#ef4444,#f87171)">
-        <span>?</span>
-      </div>
-      <h4>Coming Soon</h4>
-      <p class="tutor-program">University Student</p>
-      <div class="tutor-tags">
-        <span class="tutor-tag">TBD</span>
-      </div>
-      <p class="tutor-bio">A dedicated university student joining the WeStudy team. Details coming soon — stay tuned!</p>
-    </div>
 
-    <!-- University student 2 -->
-    <div class="tutor-card card lift">
-      <div class="tutor-avatar" style="background:linear-gradient(135deg,#3b82f6,#60a5fa)">
-        <span>?</span>
-      </div>
-      <h4>Coming Soon</h4>
-      <p class="tutor-program">University Student</p>
-      <div class="tutor-tags">
-        <span class="tutor-tag">TBD</span>
-      </div>
-      <p class="tutor-bio">A passionate university student joining the WeStudy team. Details coming soon — stay tuned!</p>
-    </div>
 
   </div>
 
@@ -2494,84 +2639,50 @@ body.mobile-menu-open .mobile-menu {
 <!-- ================= REVIEWS ================= -->
 <section id="reviews" class="tab-content">
   <div class="section-header">
-    <h3>What Parents &amp; Students Say</h3>
-    <p class="muted">Real feedback from families we've had the pleasure of working with.</p>
+    <h3>Reviews</h3>
+    <p class="muted">See what families are saying — and leave your own comment below.</p>
   </div>
 
-  <div class="reviews-grid">
-
-    <div class="review-card card lift">
-      <div class="review-stars">★★★★★</div>
-      <p class="review-text">"My daughter went from struggling in Grade 7 math to getting 85s on her tests. The tutor was incredibly patient and made it feel fun. We couldn't be happier!"</p>
-      <div class="review-author">
-        <div class="review-avatar">L</div>
-        <div>
-          <strong>Lisa T.</strong>
-          <span>Parent · Grade 7 Math</span>
+  <!-- Leave a comment form -->
+  <div class="comment-form-card card" style="margin-bottom:28px">
+    <h4 class="join-subtitle" style="margin-bottom:18px">Leave a Review</h4>
+    <form id="commentForm">
+      <div class="form-row">
+        <div class="form-field">
+          <label>Your Name</label>
+          <input type="text" name="commentName" placeholder="e.g. Sarah M." required />
+        </div>
+        <div class="form-field">
+          <label>Role</label>
+          <input type="text" name="commentRole" placeholder="e.g. Parent · Grade 5 Math" required />
         </div>
       </div>
-    </div>
-
-    <div class="review-card card lift">
-      <div class="review-stars">★★★★★</div>
-      <p class="review-text">"The flexibility of scheduling was a game changer for our busy family. Sessions were always on time, well-prepared, and my son actually looked forward to them."</p>
-      <div class="review-author">
-        <div class="review-avatar">R</div>
-        <div>
-          <strong>Raj P.</strong>
-          <span>Parent · Grade 10 Chemistry</span>
+      <div class="form-field">
+        <label>Rating</label>
+        <div class="star-picker" id="starPicker">
+          <button type="button" class="star-btn" data-val="1">★</button>
+          <button type="button" class="star-btn" data-val="2">★</button>
+          <button type="button" class="star-btn" data-val="3">★</button>
+          <button type="button" class="star-btn" data-val="4">★</button>
+          <button type="button" class="star-btn" data-val="5">★</button>
         </div>
+        <input type="hidden" name="commentRating" id="commentRating" value="5" />
       </div>
-    </div>
-
-    <div class="review-card card lift">
-      <div class="review-stars">★★★★★</div>
-      <p class="review-text">"As a Grade 12 student applying to university, I needed help fast. My tutor helped me understand calculus in a way my teacher never could. Got into my first choice school!"</p>
-      <div class="review-author">
-        <div class="review-avatar">E</div>
-        <div>
-          <strong>Emma S.</strong>
-          <span>Student · Grade 12 Calculus</span>
-        </div>
+      <div class="form-field">
+        <label>Your Comment</label>
+        <textarea name="commentText" placeholder="Share your experience with WeStudy…" required></textarea>
       </div>
-    </div>
+      <button type="submit" class="join-submit">Submit Review</button>
+      <p id="commentMsg" class="form-msg"></p>
+    </form>
+  </div>
 
-    <div class="review-card card lift">
-      <div class="review-stars">★★★★★</div>
-      <p class="review-text">"Booking was super easy and the tutor was great with my 8-year-old. She's reading so much more confidently now. Highly recommend WeStudy!"</p>
-      <div class="review-author">
-        <div class="review-avatar">M</div>
-        <div>
-          <strong>Michelle O.</strong>
-          <span>Parent · Grade 3 Reading</span>
-        </div>
-      </div>
+  <!-- Comments list -->
+  <div id="commentsList">
+    <div class="comments-loading" id="commentsLoading">
+      <div class="comments-spinner"></div>
+      <span>Loading reviews…</span>
     </div>
-
-    <div class="review-card card lift">
-      <div class="review-stars">★★★★★</div>
-      <p class="review-text">"The French tutoring was exactly what my son needed. He went from barely passing to being one of the top students in his FSL class. Amazing service!"</p>
-      <div class="review-author">
-        <div class="review-avatar">C</div>
-        <div>
-          <strong>Christine B.</strong>
-          <span>Parent · Grade 8 French</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="review-card card lift">
-      <div class="review-stars">★★★★★</div>
-      <p class="review-text">"Virtual sessions worked seamlessly. My tutor was always prepared and genuinely cared about my progress. Would 100% recommend to any student who wants to improve."</p>
-      <div class="review-author">
-        <div class="review-avatar">K</div>
-        <div>
-          <strong>Kevin A.</strong>
-          <span>Student · Grade 11 Physics</span>
-        </div>
-      </div>
-    </div>
-
   </div>
 </section>
 
@@ -2750,6 +2861,7 @@ if (joinForm) {
       email:        joinForm.email.value.trim(),
       availability: joinForm.availability.value.trim(),
       message:      joinForm.message.value.trim() || "N/A",
+      referral:     joinForm.referral.value.trim() || "None",
       reply_to:     joinForm.email.value.trim(),
       timestamp:    new Date().toLocaleString("en-CA", { timeZone: TZ })
     };
@@ -2789,6 +2901,133 @@ function launchConfetti() {
     container.appendChild(piece);
   }
   setTimeout(function() { container.remove(); }, 1600);
+}
+
+
+// ── Comments: Star Picker ──
+var starBtns = document.querySelectorAll(".star-btn");
+var commentRatingInput = document.getElementById("commentRating");
+var currentRating = 5;
+
+function updateStars(val) {
+  currentRating = val;
+  if (commentRatingInput) commentRatingInput.value = val;
+  starBtns.forEach(function(btn) {
+    btn.classList.toggle("active", parseInt(btn.dataset.val) <= val);
+  });
+}
+
+// Init all stars active (5/5 default)
+updateStars(5);
+
+starBtns.forEach(function(btn) {
+  btn.addEventListener("click", function() { updateStars(parseInt(this.dataset.val)); });
+  btn.addEventListener("mouseenter", function() {
+    starBtns.forEach(function(b) {
+      b.style.color = parseInt(b.dataset.val) <= parseInt(btn.dataset.val) ? "#f59e0b" : "#cbd5e1";
+    });
+  });
+});
+document.getElementById("starPicker")?.addEventListener("mouseleave", function() {
+  updateStars(currentRating);
+});
+
+// ── Comments: Render ──
+function renderComments(comments) {
+  var list = document.getElementById("commentsList");
+  if (!list) return;
+  list.innerHTML = "";
+  if (!comments || comments.length === 0) {
+    list.innerHTML = '<p class="comments-empty">No reviews yet — be the first to leave one! 🌟</p>';
+    return;
+  }
+  var grid = document.createElement("div");
+  grid.className = "comments-grid";
+  comments.forEach(function(c) {
+    var stars = "★".repeat(Math.min(5, Math.max(1, parseInt(c.rating) || 5)));
+    var initial = (c.name || "?")[0].toUpperCase();
+    var card = document.createElement("div");
+    card.className = "comment-card";
+    card.innerHTML =
+      '<div class="comment-stars">' + stars + '</div>' +
+      '<p class="comment-text">"' + escapeHtml(c.comment) + '"</p>' +
+      '<div class="comment-author">' +
+        '<div class="comment-avatar">' + initial + '</div>' +
+        '<div><strong>' + escapeHtml(c.name) + '</strong><span>' + escapeHtml(c.role || "") + '</span></div>' +
+      '</div>';
+    grid.appendChild(card);
+  });
+  list.appendChild(grid);
+}
+
+function escapeHtml(str) {
+  return String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+// ── Comments: Load ──
+function loadComments() {
+  fetch(BOOKING_API_URL + "?action=comments", { cache: "no-store" })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.ok) renderComments(data.comments || []);
+      else renderComments([]);
+    })
+    .catch(function() { renderComments([]); });
+}
+
+loadComments();
+
+// ── Comments: Submit ──
+var commentForm = document.getElementById("commentForm");
+var commentMsg  = document.getElementById("commentMsg");
+
+if (commentForm) {
+  commentForm.addEventListener("submit", async function(e) {
+    e.preventDefault();
+    var submitBtn = commentForm.querySelector(".join-submit");
+    submitBtn.textContent = "Submitting…";
+    submitBtn.disabled = true;
+    commentMsg.textContent = "";
+
+    var payload = {
+      action:  "addComment",
+      name:    commentForm.commentName.value.trim(),
+      role:    commentForm.commentRole.value.trim(),
+      rating:  commentRatingInput.value,
+      comment: commentForm.commentText.value.trim(),
+      timestamp: new Date().toLocaleString("en-CA", { timeZone: "America/Toronto" })
+    };
+
+    try {
+      var resp = await fetch(BOOKING_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      var data = await resp.json();
+      if (data.ok) {
+        launchConfetti();
+        commentMsg.textContent = "🎉 Thanks for your review!";
+        commentMsg.style.color = "#0f766e";
+        commentForm.reset();
+        updateStars(5);
+        loadComments();
+      } else {
+        commentMsg.textContent = "❌ " + (data.error || "Something went wrong.");
+        commentMsg.style.color = "#dc2626";
+      }
+    } catch(err) {
+      commentMsg.textContent = "❌ Network error. Please try again.";
+      commentMsg.style.color = "#dc2626";
+    } finally {
+      submitBtn.textContent = "Submit Review";
+      submitBtn.disabled = false;
+    }
+  });
 }
 
 // ── STEP 4: Calendar (view only) ──
